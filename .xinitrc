@@ -7,6 +7,13 @@ sysmodmap=/etc/X11/xinit/Xmodmap
 
 BG_IMAGES_PATH=$HOME/bg_images
 
+for f in /usr/share/fonts/*
+do
+    echo "adding fontdir '$f'"
+    xset +fp "$f"
+done
+xset fp rehash
+
 if [ -f "$userresources" ]; then
     xrdb -merge "$userresources"
 fi
