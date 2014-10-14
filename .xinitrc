@@ -18,8 +18,9 @@ if [ -f "$userresources" ]; then
     xrdb -merge "$userresources"
 fi
 
-#exec xmobar &
+
 exec xbindkeys &
 exec feh --bg-scale $HOME/bg_images/black.jpg &
 exec xmms2 &
-exec xmonad
+
+exec xmonad > $HOME/.xmonad/log.txt 2>&1
