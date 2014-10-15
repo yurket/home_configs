@@ -35,6 +35,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask .|. controlMask, xK_e     ), spawn "emacs")
     , ((modMask .|. controlMask, xK_p     ), spawn "pidgin")
     , ((modMask .|. controlMask, xK_s     ), spawn "skype")
+    , ((modMask .|. controlMask, xK_m     ), spawn "xterm -e mc")
 
     -- xmms2d
     , ((mod4Mask               , xK_Home     ), spawn "xmms2 prev")
