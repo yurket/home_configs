@@ -1,0 +1,7 @@
+e asm.demangle = true
+e bin.demangle = true
+
+e cmd.stack = true
+eco solarized
+
+
