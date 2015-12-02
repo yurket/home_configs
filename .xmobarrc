@@ -7,7 +7,7 @@ Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
        , lowerOnStart = True
        , commands = [ Run Weather "UMMS" ["-t","<station>: <tempC>C","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 9000
                     , Run Network "enp9s0" ["-L","0","-H","100","--normal","green","--high","red"] 10
-                    , Run Network "wlp3s0" ["-L","0","-H","100","--normal","green","--high","red"] 10
+                    , Run Network "wlan0" ["-L","0","-H","100","--normal","green","--high","red"] 10
                     , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
@@ -23,5 +23,5 @@ Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%battery% ||| %cpu% || %memory% || %swap% || %enp9s0% || %wlp3s0% }{ <fc=#ee9a00>%date%</fc>| %UMMS% | %uname%"
+       , template = "%battery% ||| %cpu% || %memory% || %swap% || %enp9s0% || %wlan0% }{ <fc=#ee9a00>%date%</fc>| %UMMS% | %uname%"
        }

@@ -11,6 +11,7 @@ import System.Exit
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
+import qualified XMonad.Actions.FlexibleResize as Flex
 
 myTerminal      = "xterm"
 
@@ -31,7 +32,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- , ((mod4Mask    ,          xK_grave ), spawn "pavucontrol" )
 
     -- my proggies
-    , ((modMask .|. controlMask, xK_b     ), spawn "firefox-bin")
+    , ((modMask .|. controlMask, xK_b     ), spawn "eatmydata firefox-bin")
     , ((modMask .|. controlMask, xK_e     ), spawn "emacs")
     , ((modMask .|. controlMask, xK_p     ), spawn "pidgin")
     , ((modMask .|. controlMask, xK_s     ), spawn "skype")
@@ -139,7 +140,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w))
     , ((modMask, button2), (\w -> focus w >> windows W.swapMaster))
-    , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
+    -- , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
+    , ((modMask, button3), (\w -> focus w >> Flex.mouseResizeWindow w))
     -- Mouse scroll wheel to raise/lower windows
     , ((modMask, button5), (\w -> windows W.swapDown))
     , ((modMask, button4), (\w -> windows W.swapUp))
@@ -164,7 +166,8 @@ myFocusFollowsMouse = True
 myStartupHook = do spawn "xterm"
 
 ------------------------------------------------------------------------
-xmobarCmdT = "xmobar -o -B '#020823' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlp3s0%  ||/\\/\\/\\/\\/\\||  <fc=#ee9a00>%date%</fc>| %UMMS% '"
+xmobarCmdT = "xmobar -o -B '#020823' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlan0% ||/\\/\\/\\/\\/\\||  <fc=#ee9a00>%date%</fc>| %UMMS% | %uname% '"
+
 ---xmobarCmdT = "                                            xmobar -o -B '#122c80' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlp3s0% }{ <fc=#ee9a00>%date%</fc>| %UMMS%'"
 -- cool colors: 0d2244, 0b2e1c
 -- xmobarCmdB = "xmobar -b -B '#0b2e1c' -F '#adbadd' /home/lite/.xmobarrc"
