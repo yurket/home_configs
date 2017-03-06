@@ -4,8 +4,10 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run
 import XMonad.Layout.NoBorders
 import XMonad.Hooks.EwmhDesktops (ewmh)
+import XMonad.Hooks.ManageDocks as XHD
 
-import System.IO
+import qualified XMonad.Hooks.EwmhDesktops as XHE
+import qualified XMonad.Hooks.SetWMName as XHS
 
 import System.Exit
 
@@ -29,7 +31,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch a terminal
     [ ((controlMask ,          xK_grave ), spawn $ XMonad.terminal conf)
     , ((mod4Mask    ,          xK_grave ), spawn "xterm -e alsamixer" )
-    -- , ((mod4Mask    ,          xK_grave ), spawn "pavucontrol" )
 
     -- my proggies
     , ((modMask .|. controlMask, xK_b     ), spawn "eatmydata firefox-bin")
@@ -125,17 +126,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, mod4Mask), (W.shift, shiftMask .|. modMask)]]
 
-{-
-    ++
-
-    --
-    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-    --
-    [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
--}
 
 myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w))
@@ -147,7 +137,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, button4), (\w -> windows W.swapUp))
     ]
 
-myLayout = smartBorders $ avoidStruts $ (Full ||| tiled ||| Mirror tiled)
+--- myLayout = smartBorders $ avoidStruts $ (Full ||| tiled ||| Mirror tiled)
+myLayout = smartBorders $ avoidStruts $ (noBorders Full ||| tiled ||| Mirror tiled)
   where
      tiled   = Tall nmaster delta ratio
      nmaster = 1
@@ -165,16 +156,15 @@ myFocusFollowsMouse = True
 
 myStartupHook = do spawn "xterm"
 
-------------------------------------------------------------------------
-xmobarCmdT = "xmobar -o -B '#020823' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlan0% ||/\\/\\/\\/\\/\\||  <fc=#ee9a00>%date%</fc>| %UMMS% | %uname% '"
+-- fixing Android studio
+-- myStartupHook = setWMName "LG3D"
 
----xmobarCmdT = "                                            xmobar -o -B '#122c80' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlp3s0% }{ <fc=#ee9a00>%date%</fc>| %UMMS%'"
--- cool colors: 0d2244, 0b2e1c
--- xmobarCmdB = "xmobar -b -B '#0b2e1c' -F '#adbadd' /home/lite/.xmobarrc"
+------------------------------------------------------------------------
+xmobarCmdT = "xmobar -o -B '#020823' -F '#adbadd' -t '%StdinReader% }{ %battery% ||| %cpu% || %memory% || %wlp0s19f2u4% || %enp4s6% || /\\/\\/\\/\\/\\||  <fc=#ee9a00>%date%</fc>| %UMMS% | %uname% '"
+
 
 main = do dinT <- spawnPipe xmobarCmdT
----          dinB <- spawnPipe xmobarCmdB
-          xmonad $ ewmh $ defaultConfig {
+          xmonad $ fullscreenFix $ addFullScreenHook $ XHE.ewmh $ XHD.docks $ defaultConfig {
       -- simple stuff
       terminal           = myTerminal,
       focusFollowsMouse  = myFocusFollowsMouse,
@@ -193,5 +183,37 @@ main = do dinT <- spawnPipe xmobarCmdT
       manageHook         = myManageHook,
       logHook            = dynamicLogWithPP $ {- dzenPP -} xmobarPP { ppOutput = hPutStrLn dinT },
 
+
       startupHook        = myStartupHook
 }
+
+addFullScreenHook :: XConfig a -> XConfig a
+addFullScreenHook c = c { handleEventHook = handleEventHook c <+> XHE.fullscreenEventHook }
+
+-- https://github.com/mpv-player/mpv/issues/888
+-- workarounds firefox fullscreen (on F11)
+fullscreenFix :: XConfig a -> XConfig a
+fullscreenFix c = c {
+                      startupHook = startupHook c +++ setSupportedWithFullscreen
+                    }
+                  where x +++ y = mappend x y
+
+setSupportedWithFullscreen :: X ()
+setSupportedWithFullscreen = withDisplay $ \dpy -> do
+    r <- asks theRoot
+    a <- getAtom "_NET_SUPPORTED"
+    c <- getAtom "ATOM"
+    supp <- mapM getAtom ["_NET_WM_STATE_HIDDEN"
+                         ,"_NET_WM_STATE_FULLSCREEN"
+                         ,"_NET_NUMBER_OF_DESKTOPS"
+                         ,"_NET_CLIENT_LIST"
+                         ,"_NET_CLIENT_LIST_STACKING"
+                         ,"_NET_CURRENT_DESKTOP"
+                         ,"_NET_DESKTOP_NAMES"
+                         ,"_NET_ACTIVE_WINDOW"
+                         ,"_NET_WM_DESKTOP"
+                         ,"_NET_WM_STRUT"
+                         ]
+    io $ changeProperty32 dpy r a c propModeReplace (fmap fromIntegral supp)
+
+    XHS.setWMName "xmonad"
