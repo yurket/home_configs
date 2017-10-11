@@ -1,16 +1,10 @@
 !! file created by my own
 
-! xterm*font: terminus-13
-! xterm*boldFont: terminus-13
+xterm*font:         -xos4-terminus-medium-*-*-*-*-140*-*-iso10646-1
+xterm*boldFont:        -xos4-terminus-medium-*-*-*-*-140-*-*-*-*-iso10646-1
 
-! xterm*font:        -xos4-terminus-medium-*-*-*-*-200-*-*-*-*-iso10646-1
-! xterm*boldFont:        -xos4-terminus-medium-*-*-*-*-200-*-*-*-*-iso10646-1
-! xterm*font:  -b&h-lucidatypewriter-medium-*-*-*-11-*-*-*-*-*-iso10646-1
-
-! works fine
-XTerm*faceName: Misc Console:size=8
-!XTerm*faceName: Dejavu Console:size=9
-
+tightvnc*grabKeyboard: true
+vncviewer*grabKeyboard: true
 
 
 xterm*utf8: 1

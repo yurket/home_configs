@@ -33,10 +33,10 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((mod4Mask    ,          xK_grave ), spawn "xterm -e alsamixer" )
 
     -- my proggies
-    , ((modMask .|. controlMask, xK_b     ), spawn "eatmydata firefox-bin")
+    , ((modMask .|. controlMask, xK_b     ), spawn "firefox-bin")
     , ((modMask .|. controlMask, xK_e     ), spawn "emacs")
     , ((modMask .|. controlMask, xK_p     ), spawn "pidgin")
-    , ((modMask .|. controlMask, xK_s     ), spawn "skype")
+    , ((modMask .|. controlMask, xK_s     ), spawn "skypeforlinux")
     , ((modMask .|. controlMask, xK_m     ), spawn "xterm -e mc")
 
     -- xmms2d
@@ -145,11 +145,17 @@ myLayout = smartBorders $ avoidStruts $ (noBorders Full ||| tiled ||| Mirror til
      ratio   = 3/5
      delta   = 3/100
 
+
+--- can get class name with xprop util
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "Wine"           --> doFloat
-    , resource  =? "desktop_window" --> doIgnore ]
+    , resource  =? "desktop_window" --> doIgnore
+    , className =? "Skype"          --> doShift "5[im]"
+    , className =? "Pidgin"         --> doShift "5[im]"
+    , className =? "Firefox"        --> doShift "4[web]"
+ ]
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
@@ -181,6 +187,7 @@ main = do dinT <- spawnPipe xmobarCmdT
       -- hooks, layouts
       layoutHook         = myLayout,
       manageHook         = myManageHook,
+      -- manageHook         = myManageHook,
       logHook            = dynamicLogWithPP $ {- dzenPP -} xmobarPP { ppOutput = hPutStrLn dinT },
 
 
@@ -216,4 +223,6 @@ setSupportedWithFullscreen = withDisplay $ \dpy -> do
                          ]
     io $ changeProperty32 dpy r a c propModeReplace (fmap fromIntegral supp)
 
-    XHS.setWMName "xmonad"
+    -- XHS.setWMName "xmonad"
+    -- fix intelij Idea (Android studio, arduino)
+    XHS.setWMName "LG3D"
