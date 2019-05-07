@@ -85,3 +85,18 @@
       (setq dummy-h-mode-default-major-mode 'c++-mode)))
 
 
+;; just wonderful tutorial on emacs config for rust. But this config looks great even without rust =)
+;; https://manenko.com/2016/08/03/setup-emacs-for-rust-development.html
+(add-to-list 'load-path (expand-file-name "/home/lite/.emacs.d/rust_manual" user-emacs-directory))
+
+(require 'init-elpa)
+
+(require 'init-ui)
+(require 'init-editing)
+(require 'init-navigation)
+(require 'init-miscellaneous)
+(require 'init-company-mode)
+(require 'init-rust)
+
+(provide '.emacs)
+;;;.emacs ends here
