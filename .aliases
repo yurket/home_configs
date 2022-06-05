@@ -1,0 +1,11 @@
+alias gits='git status'
+alias gitpr='git pull --rebase'
+alias gitcm='git commit -m '
+alias gitca='git commit --amend'
+alias gitka='gitk --all'
+
+alias psgrep='ps aux | grep -i --color=auto '
+
+alias dk='docker'
+alias dk-c='docker-compose'
+alias dk-kill-running='docker kill $(docker ps -q)'
